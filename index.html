@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0b0b">
+    <title>Natiely & Gustavo | 03.04.2027</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Montserrat:wght@300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="no-scroll">
+
+    <div id="intro">
+        <div class="envelope">
+
+            <!-- corpo do envelope + costuras inferiores doiradas -->
+            <svg class="env-svg env-back" viewBox="0 0 400 280" preserveAspectRatio="none" aria-hidden="true">
+                <rect class="env-body" x="14" y="14" width="372" height="252" rx="8"/>
+                <path class="env-seam" d="M14,258 L198,152 Q206,163 214,152 L386,258"/>
+            </svg>
+
+            <!-- carta que aparece dentro do envelope -->
+            <div class="letter">
+                <img src="logo.png" class="intro-logo" alt="Logo Natiely e Gustavo">
+                <h2>Natiely & Gustavo</h2>
+                <p class="intro-date">03 de Abril, 2027</p>
+                <button id="openSite">Abrir Convite</button>
+            </div>
+
+            <!-- aba (flap) do envelope com a costura dourada em V -->
+            <svg class="env-svg env-flap" viewBox="0 0 400 280" preserveAspectRatio="none" aria-hidden="true">
+                <g class="env-flap-group">
+                    <polygon class="env-flap-fill" points="14,16 386,16 214,152 206,163 198,152"/>
+                    <path class="env-seam" d="M14,16 L198,152 Q206,163 214,152 L386,16"/>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <canvas id="particles"></canvas>
+
+    <audio id="music" loop preload="none">
+        <source src="athousandyears.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="musicButton" aria-label="Ligar ou desligar musica">🔊</button>
+
+    <section class="hero">
+        <div class="convite-carta">
+            <img src="logo.png" class="logo" alt="Logo Natiely e Gustavo">
+            <p class="eyebrow">Vamos nos casar</p>
+            <h1 class="title">Natiely & Gustavo</h1>
+            <p class="date">03 • 04 • 2027</p>
+            <div class="welcome-box">Bem-vindos ao nosso casamento</div>
+        </div>
+        <div class="scroll-hint" aria-hidden="true">▾</div>
+    </section>
+
+    <section class="section">
+        <p class="eyebrow">Falta pouco</p>
+        <h2>Contagem Regressiva</h2>
+        <div id="countdown">
+            <div><span id="days">00</span><p>Dias</p></div>
+            <div><span id="hours">00</span><p>Horas</p></div>
+            <div><span id="minutes">00</span><p>Min</p></div>
+            <div><span id="seconds">00</span><p>Seg</p></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <p class="eyebrow">Programação</p>
+        <h2>Cerimônia & Festa</h2>
+        <div class="grid">
+            <div class="card">
+                <span class="card-icon">⛪</span>
+                <h3>Cerimônia</h3>
+                <h4>Igreja Matriz</h4>
+                <p>03 de abril de 2027</p>
+                <p class="highlight">17:00</p>
+            </div>
+            <div class="card">
+                <span class="card-icon">🥂</span>
+                <h3>Festa</h3>
+                <h4>Recanto e Pesqueiro Dal Pont</h4>
+                <p>São Miguel do Iguaçu - PR</p>
+                <p class="highlight">Após a cerimônia</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <p class="eyebrow">Nossos momentos</p>
+        <h2>Galeria</h2>
+        <div class="gallery">
+            <div class="gallery-item"><img src="foto1.jpeg" alt="Foto do casal 1" loading="lazy"></div>
+            <div class="gallery-item gallery-tall"><img src="foto2.jpg" alt="Foto do casal 2" loading="lazy"></div>
+            <div class="gallery-item"><img src="foto3.jpeg" alt="Foto do casal 3" loading="lazy"></div>
+            <div class="gallery-item"><img src="foto4.jpeg" alt="Foto do casal 4" loading="lazy"></div>
+            <div class="gallery-item"><img src="20d2a895-5363-4e07-b065-8ea74f8ffa33.jpeg" alt="Foto do casal 5" loading="lazy"></div>
+            <div class="gallery-item"><img src="buffet.png" alt="Buffet da festa" loading="lazy"></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <p class="eyebrow">Como chegar</p>
+        <h2>Local do Evento</h2>
+        <div class="map-container">
+            <iframe
+                src="https://www.google.com/maps?q=Recanto+e+Pesqueiro+Dal+Pont,+S%C3%A3o+Miguel+do+Iguaçu+-+PR&output=embed"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Mapa do local da festa">
+            </iframe>
+        </div>
+        <a class="btn-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Recanto+e+Pesqueiro+Dal+Pont,+S%C3%A3o+Miguel+do+Iguaçu+-+PR">Como Chegar</a>
+    </section>
+
+    <section class="section">
+        <p class="eyebrow">Sua presença é o nosso maior presente</p>
+        <h2>Confirme sua Presença</h2>
+        <form id="rsvpForm" novalidate>
+            <input type="text" id="rsvpName" placeholder="Seu nome" required>
+            <input type="number" id="rsvpGuests" min="1" max="10" placeholder="Número de convidados" required>
+            <button type="submit" class="btn-primary">Confirmar Presença</button>
+            <p id="rsvpFeedback" class="rsvp-feedback" role="status" aria-live="polite"></p>
+        </form>
+    </section>
+
+    <footer class="footer">
+        <p class="footer-names">Natiely & Gustavo</p>
+        <p>Com amor, contamos os dias para celebrar com você 💛</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
