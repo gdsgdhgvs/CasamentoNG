@@ -11,52 +11,175 @@
 </head>
 <body class="no-scroll">
 
+    <!-- ========== INTRO: ENVELOPE KRAFT ========== -->
     <div id="intro">
-        <div class="envelope">
+        <div class="env-scene">
 
-            <!-- corpo do envelope + costuras inferiores doiradas -->
-            <svg class="env-svg env-back" viewBox="0 0 400 280" preserveAspectRatio="none" aria-hidden="true">
-                <rect class="env-body" x="14" y="14" width="372" height="252" rx="8"/>
-                <path class="env-seam" d="M14,258 L198,152 Q206,163 214,152 L386,258"/>
-            </svg>
+            <div class="env-wrap" id="envWrap" tabindex="0" role="button" aria-label="Abrir envelope do convite">
 
-            <!-- carta que aparece dentro do envelope -->
-            <div class="letter">
-                <img src="logo.png" class="intro-logo" alt="Logo Natiely e Gustavo">
-                <h2>Natiely & Gustavo</h2>
-                <p class="intro-date">03 de Abril, 2027</p>
-                <button id="openSite">Abrir Convite</button>
-            </div>
+                <!-- CORPO DO ENVELOPE (SVG base) -->
+                <svg class="env-base-svg" viewBox="0 0 480 318" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <defs>
+                        <filter id="paper" x="-5%" y="-5%" width="110%" height="110%">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+                            <feColorMatrix type="saturate" values="0" in="noise" result="gn"/>
+                            <feBlend in="SourceGraphic" in2="gn" mode="multiply" result="bl"/>
+                            <feComposite in="bl" in2="SourceGraphic" operator="in"/>
+                        </filter>
+                        <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#c9ad87"/>
+                            <stop offset="100%" stop-color="#a8895e"/>
+                        </linearGradient>
+                        <linearGradient id="leftGrad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#b89868"/>
+                            <stop offset="100%" stop-color="#c9ad87"/>
+                        </linearGradient>
+                        <linearGradient id="rightGrad" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#c9ad87"/>
+                            <stop offset="100%" stop-color="#b89868"/>
+                        </linearGradient>
+                        <linearGradient id="bottomGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#c9ad87"/>
+                            <stop offset="100%" stop-color="#9a7848"/>
+                        </linearGradient>
+                        <linearGradient id="goldSeam" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#9a7a45"/>
+                            <stop offset="50%" stop-color="#e2c98a"/>
+                            <stop offset="100%" stop-color="#9a7a45"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- corpo -->
+                    <rect x="0" y="0" width="480" height="318" rx="4" fill="url(#bodyGrad)" filter="url(#paper)"/>
+                    <!-- dobras laterais e fundo -->
+                    <polygon points="0,0 0,318 240,159" fill="url(#leftGrad)" opacity="0.5"/>
+                    <polygon points="480,0 480,318 240,159" fill="url(#rightGrad)" opacity="0.5"/>
+                    <polygon points="0,318 480,318 240,159" fill="url(#bottomGrad)" opacity="0.65"/>
+                    <!-- linhas de dobra -->
+                    <line x1="0" y1="0" x2="240" y2="159" stroke="#8a6f45" stroke-width="0.8" opacity="0.45"/>
+                    <line x1="480" y1="0" x2="240" y2="159" stroke="#8a6f45" stroke-width="0.8" opacity="0.45"/>
+                    <line x1="0" y1="318" x2="240" y2="159" stroke="#7a6035" stroke-width="0.8" opacity="0.45"/>
+                    <line x1="480" y1="318" x2="240" y2="159" stroke="#7a6035" stroke-width="0.8" opacity="0.45"/>
+                    <!-- borda dourada -->
+                    <rect x="1" y="1" width="478" height="316" rx="3" fill="none" stroke="url(#goldSeam)" stroke-width="1.5" opacity="0.65"/>
+                </svg>
 
-            <!-- aba (flap) do envelope com a costura dourada em V -->
-            <svg class="env-svg env-flap" viewBox="0 0 400 280" preserveAspectRatio="none" aria-hidden="true">
-                <g class="env-flap-group">
-                    <polygon class="env-flap-fill" points="14,16 386,16 214,152 206,163 198,152"/>
-                    <path class="env-seam" d="M14,16 L198,152 Q206,163 214,152 L386,16"/>
-                </g>
-            </svg>
-        </div>
-    </div>
+                <!-- CARTA (fica escondida dentro, sobe ao abrir) -->
+                <div class="env-letter" id="envLetter">
+                    <img src="logo.png" class="env-letter-logo" alt="Logo Natiely e Gustavo">
+                    <h2 class="env-letter-names">Natiely &amp; Gustavo</h2>
+                    <div class="env-letter-divider"></div>
+                    <p class="env-letter-date">03 de Abril de 2027</p>
+                    <button id="openSite">Abrir Convite</button>
+                </div>
 
+                <!-- ABA SUPERIOR — cobre o envelope inteiro, com lacre no centro -->
+                <div class="env-flap" id="envFlap">
+                    <svg viewBox="0 0 480 318" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:100%;display:block;overflow:visible;">
+                        <defs>
+                            <linearGradient id="flapBodyGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#b08d5a"/>
+                                <stop offset="100%" stop-color="#c9ad87"/>
+                            </linearGradient>
+                            <linearGradient id="flapTopGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#9a7848"/>
+                                <stop offset="100%" stop-color="#b89868"/>
+                            </linearGradient>
+                            <radialGradient id="waxG" cx="50%" cy="38%" r="50%">
+                                <stop offset="0%" stop-color="#e05555"/>
+                                <stop offset="48%" stop-color="#9b1c1c"/>
+                                <stop offset="100%" stop-color="#4a0808"/>
+                            </radialGradient>
+                            <filter id="waxDrop" x="-40%" y="-40%" width="180%" height="180%">
+                                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.5"/>
+                            </filter>
+                            <filter id="paper2" x="-5%" y="-5%" width="110%" height="110%">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+                                <feColorMatrix type="saturate" values="0" in="noise" result="gn"/>
+                                <feBlend in="SourceGraphic" in2="gn" mode="multiply" result="bl"/>
+                                <feComposite in="bl" in2="SourceGraphic" operator="in"/>
+                            </filter>
+                            <linearGradient id="goldV" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#9a7a45"/>
+                                <stop offset="50%" stop-color="#e2c98a"/>
+                                <stop offset="100%" stop-color="#9a7a45"/>
+                            </linearGradient>
+                        </defs>
+
+                        <!-- triângulo inferior (parte de trás do flap — visível quando aberto) -->
+                        <polygon points="0,318 480,318 240,159" fill="#a08050" opacity="0.55"/>
+
+                        <!-- corpo principal do flap cobre TUDO (retângulo + triângulo superior) -->
+                        <rect x="0" y="0" width="480" height="318" rx="4" fill="url(#flapBodyGrad)" filter="url(#paper2)"/>
+
+                        <!-- triângulo superior em cima do rect para dar forma de aba -->
+                        <polygon points="0,0 480,0 240,175" fill="url(#flapTopGrad)" filter="url(#paper2)" opacity="0.85"/>
+
+                        <!-- linha V dourada da aba -->
+                        <polyline points="0,0 240,175 480,0" fill="none" stroke="url(#goldV)" stroke-width="1.8" opacity="0.8"/>
+                        <!-- borda superior -->
+                        <line x1="0" y1="0" x2="480" y2="0" stroke="#c8a86a" stroke-width="1.5" opacity="0.5"/>
+                        <!-- bordas laterais e inferior -->
+                        <rect x="1" y="1" width="478" height="316" rx="3" fill="none" stroke="#c8a86a" stroke-width="1" opacity="0.3"/>
+
+                        <!-- linhas de dobra internas do flap -->
+                        <line x1="0" y1="0" x2="240" y2="175" stroke="#8a6535" stroke-width="0.7" opacity="0.35"/>
+                        <line x1="480" y1="0" x2="240" y2="175" stroke="#8a6535" stroke-width="0.7" opacity="0.35"/>
+
+                        <!-- LACRE DE CERA — no centro do envelope (ponto do V) -->
+                        <g transform="translate(240,175)" filter="url(#waxDrop)">
+                            <ellipse cx="0" cy="5" rx="24" ry="7" fill="#1a0000" opacity="0.35"/>
+                            <circle cx="0" cy="0" r="26" fill="url(#waxG)"/>
+                            <ellipse cx="-8" cy="-9" rx="10" ry="7" fill="#e86060" opacity="0.32"/>
+                            <line x1="-14" y1="-10" x2="10" y2="14" stroke="#6a0a0a" stroke-width="1" opacity="0.5" stroke-linecap="round"/>
+                            <line x1="12" y1="-12" x2="-10" y2="10" stroke="#7a1010" stroke-width="0.7" opacity="0.4" stroke-linecap="round"/>
+                            <line x1="-7" y1="17" x2="16" y2="-7" stroke="#6a0808" stroke-width="0.6" opacity="0.35" stroke-linecap="round"/>
+                            <text x="0" y="6" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#ffd0d0" opacity="0.8" font-style="italic">N&amp;G</text>
+                        </g>
+
+                        <!-- logo.png centralizado no envelope (canto inferior do flap) -->
+                        <image href="logo.png" x="200" y="220" width="80" height="80"
+                               style="border-radius:50%"
+                               clip-path="circle(40px at 40px 40px)"
+                               opacity="0.92"/>
+
+                        <!-- data abaixo da logo -->
+                        <text x="240" y="312" text-anchor="middle"
+                              font-family="'Montserrat', sans-serif"
+                              font-size="11" fill="#e7dcc8" letter-spacing="2" opacity="0.8">
+                            03 de Abril de 2027
+                        </text>
+                    </svg>
+                </div>
+
+            </div><!-- /env-wrap -->
+
+            <p class="env-hint" id="envHint">toque para abrir ▾</p>
+
+        </div><!-- /env-scene -->
+    </div><!-- /intro -->
+
+    <!-- ========== PARTÍCULAS ========== -->
     <canvas id="particles"></canvas>
 
+    <!-- ========== MÚSICA ========== -->
     <audio id="music" loop preload="none">
         <source src="athousandyears.mp3" type="audio/mpeg">
     </audio>
-
     <button id="musicButton" aria-label="Ligar ou desligar musica">🔊</button>
 
+    <!-- ========== HERO ========== -->
     <section class="hero">
         <div class="convite-carta">
             <img src="logo.png" class="logo" alt="Logo Natiely e Gustavo">
             <p class="eyebrow">Vamos nos casar</p>
-            <h1 class="title">Natiely & Gustavo</h1>
+            <h1 class="title">Natiely &amp; Gustavo</h1>
             <p class="date">03 • 04 • 2027</p>
             <div class="welcome-box">Bem-vindos ao nosso casamento</div>
         </div>
         <div class="scroll-hint" aria-hidden="true">▾</div>
     </section>
 
+    <!-- ========== CONTAGEM ========== -->
     <section class="section">
         <p class="eyebrow">Falta pouco</p>
         <h2>Contagem Regressiva</h2>
@@ -68,9 +191,10 @@
         </div>
     </section>
 
+    <!-- ========== PROGRAMAÇÃO ========== -->
     <section class="section">
         <p class="eyebrow">Programação</p>
-        <h2>Cerimônia & Festa</h2>
+        <h2>Cerimônia &amp; Festa</h2>
         <div class="grid">
             <div class="card">
                 <span class="card-icon">⛪</span>
@@ -89,6 +213,7 @@
         </div>
     </section>
 
+    <!-- ========== GALERIA ========== -->
     <section class="section">
         <p class="eyebrow">Nossos momentos</p>
         <h2>Galeria</h2>
@@ -102,20 +227,36 @@
         </div>
     </section>
 
+    <!-- ========== MAPA ========== -->
     <section class="section">
         <p class="eyebrow">Como chegar</p>
         <h2>Local do Evento</h2>
         <div class="map-container">
             <iframe
-                src="https://www.google.com/maps?q=Recanto+e+Pesqueiro+Dal+Pont,+S%C3%A3o+Miguel+do+Iguaçu+-+PR&output=embed"
+                src="https://www.google.com/maps?q=Recanto+e+Pesqueiro+Dal+Pont,+S%C3%A3o+Miguel+do+Igua%C3%A7u+-+PR&output=embed"
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
                 title="Mapa do local da festa">
             </iframe>
         </div>
-        <a class="btn-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Recanto+e+Pesqueiro+Dal+Pont,+S%C3%A3o+Miguel+do+Iguaçu+-+PR">Como Chegar</a>
+        <a class="btn-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Recanto+e+Pesqueiro+Dal+Pont,+S%C3%A3o+Miguel+do+Igua%C3%A7u+-+PR">Como Chegar</a>
     </section>
 
+    <!-- ========== BUFFET ========== -->
+    <section class="section">
+        <p class="eyebrow">Recepção</p>
+        <h2>Nosso Buffet</h2>
+        <div class="buffet-container">
+            <img src="buffet.png" alt="Buffet da recepção" class="buffet-img">
+            <div class="buffet-info">
+                <h3>Recanto e Pesqueiro Dal Pont</h3>
+                <p>Preparamos uma recepção especial para celebrar esse momento tão importante ao lado das pessoas que amamos.</p>
+                <p>O buffet contará com um delicioso jantar, bebidas, sobremesas e um ambiente preparado para tornar essa noite inesquecível.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RSVP ========== -->
     <section class="section">
         <p class="eyebrow">Sua presença é o nosso maior presente</p>
         <h2>Confirme sua Presença</h2>
@@ -127,8 +268,9 @@
         </form>
     </section>
 
+    <!-- ========== FOOTER ========== -->
     <footer class="footer">
-        <p class="footer-names">Natiely & Gustavo</p>
+        <p class="footer-names">Natiely &amp; Gustavo</p>
         <p>Com amor, contamos os dias para celebrar com você 💛</p>
     </footer>
 
