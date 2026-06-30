@@ -1,151 +1,162 @@
-const intro = document.getElementById("intro");
-const openSite = document.getElementById("openSite");
-const envelope = document.querySelector(".envelope");
-const music = document.getElementById("music");
-const musicButton = document.getElementById("musicButton");
+/* ============================================================
+   script.js — Natiely & Gustavo | 03.04.2027
+   ============================================================ */
 
-// 1. EVENTO DE ABERTURA
-openSite.addEventListener("click", (e) => {
-    e.stopPropagation();
-    envelope.classList.add("open");
+/* ---------- ENVELOPE ---------- */
+(function () {
+    const intro   = document.getElementById('intro');
+    const envWrap = document.getElementById('envWrap');
+    const hint    = document.getElementById('envHint');
+    const openBtn = document.getElementById('openSite');
+    let opened    = false;
 
-    setTimeout(() => {
-        intro.style.opacity = "0";
-        intro.style.visibility = "hidden";
-        document.body.classList.remove("no-scroll");
-    }, 1600);
+    function openEnvelope() {
+        if (opened) return;
+        opened = true;
 
-    music.volume = 0;
-    music.play().catch(() => console.log("Interação necessária para áudio."));
+        // esconde a dica
+        hint.classList.add('hidden');
 
-    let vol = 0;
-    const fadeIn = setInterval(() => {
-        if (vol < 0.5) {
-            vol += 0.05;
-            music.volume = Math.min(vol, 0.5);
-        } else {
-            clearInterval(fadeIn);
-        }
-    }, 200);
-});
-
-// 2. MUDO / PLAY
-musicButton.addEventListener("click", () => {
-    if (music.paused) {
-        music.play();
-        musicButton.innerHTML = "🔊";
-    } else {
-        music.pause();
-        musicButton.innerHTML = "🔇";
+        // adiciona a classe que dispara as animações CSS (flap + carta)
+        envWrap.classList.add('open');
     }
-});
 
-// 3. CONTADOR REGRESSIVO
-const targetDate = new Date(2027, 3, 3, 17, 0, 0).getTime(); // Mês 3 = Abril
-
-function updateCountdown() {
-    const now = new Date().getTime();
-    const diff = targetDate - now;
-
-    const daysEl = document.getElementById("days");
-    const hoursEl = document.getElementById("hours");
-    const minutesEl = document.getElementById("minutes");
-    const secondsEl = document.getElementById("seconds");
-
-    if (diff > 0) {
-        daysEl.innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, "0");
-        hoursEl.innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, "0");
-        minutesEl.innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, "0");
-        secondsEl.innerText = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, "0");
-    } else {
-        daysEl.innerText = "00";
-        hoursEl.innerText = "00";
-        minutesEl.innerText = "00";
-        secondsEl.innerText = "00";
+    function goToSite() {
+        intro.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
     }
-}
-setInterval(updateCountdown, 1000);
-updateCountdown();
 
-// 4. EFEITO DE PARTÍCULAS (OURO) — adaptado para performance mobile
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
-let particles = [];
+    // clique em qualquer lugar do envelope abre a aba
+    envWrap.addEventListener('click', openEnvelope);
 
-function isMobile() {
-    return window.innerWidth < 768;
-}
-
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resize);
-resize();
-
-function createParticles() {
-    const count = isMobile() ? 35 : 70;
-    particles = [];
-    for (let i = 0; i < count; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 2 + 0.5,
-            speed: Math.random() * 0.5 + 0.2
-        });
-    }
-}
-createParticles();
-window.addEventListener("resize", createParticles);
-
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(200, 168, 106, 0.3)";
-    particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        p.y += p.speed;
-        if (p.y > canvas.height) p.y = -10;
+    // botão "Abrir Convite" leva ao site
+    // aguarda a animação da carta terminar (carta leva ~1.6s, mais uma pausa de 0.4s)
+    openBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!opened) openEnvelope();
+        setTimeout(goToSite, 800);
     });
-    requestAnimationFrame(animate);
-}
-if (!prefersReducedMotion) {
-    animate();
-} else {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
 
-// 5. CONFIRMAÇÃO DE PRESENÇA (RSVP)
-const rsvpForm = document.getElementById("rsvpForm");
-const rsvpFeedback = document.getElementById("rsvpFeedback");
+    // suporte a teclado
+    envWrap.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') openEnvelope();
+    });
+})();
 
-rsvpForm.addEventListener("submit", (e) => {
-    e.preventDefault();
 
-    const nameInput = document.getElementById("rsvpName");
-    const guestsInput = document.getElementById("rsvpGuests");
-    const name = nameInput.value.trim();
-    const guests = guestsInput.value.trim();
+/* ---------- PARTÍCULAS ---------- */
+(function () {
+    const canvas = document.getElementById('particles');
+    const ctx    = canvas.getContext('2d');
+    let particles = [];
 
-    if (!name || !guests || Number(guests) < 1) {
-        rsvpFeedback.textContent = "Por favor, preencha seu nome e o número de convidados.";
-        rsvpFeedback.classList.add("error");
-        return;
+    function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
 
-    rsvpFeedback.classList.remove("error");
+    function createParticle() {
+        return {
+            x:       Math.random() * canvas.width,
+            y:       Math.random() * canvas.height,
+            size:    Math.random() * 2 + 0.5,
+            speedX:  (Math.random() - 0.5) * 0.4,
+            speedY:  (Math.random() - 0.5) * 0.4,
+            opacity: Math.random() * 0.5 + 0.1,
+        };
+    }
 
-    // Envia a confirmação via WhatsApp para os noivos.
-    // Troque o número abaixo pelo número de WhatsApp do casal (formato: 55DDDNUMERO).
-    const phoneNumber = "5500000000000";
-    const message = `Olá! Confirmo minha presença no casamento de Natiely & Gustavo.%0ANome: ${encodeURIComponent(name)}%0ANúmero de convidados: ${encodeURIComponent(guests)}`;
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    function init() {
+        resize();
+        particles = Array.from({ length: 80 }, createParticle);
+    }
 
-    rsvpFeedback.textContent = "Obrigado! Abrindo o WhatsApp para confirmar...";
-    window.open(whatsappUrl, "_blank");
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(200,168,106,${p.opacity})`;
+            ctx.fill();
+            p.x += p.speedX;
+            p.y += p.speedY;
+            if (p.x < 0 || p.x > canvas.width)  p.speedX *= -1;
+            if (p.y < 0 || p.y > canvas.height)  p.speedY *= -1;
+        });
+        requestAnimationFrame(animate);
+    }
 
-    rsvpForm.reset();
-});
+    window.addEventListener('resize', resize);
+    init();
+    animate();
+})();
+
+
+/* ---------- MÚSICA ---------- */
+(function () {
+    const music = document.getElementById('music');
+    const btn   = document.getElementById('musicButton');
+    let playing = false;
+
+    btn.addEventListener('click', function () {
+        if (playing) {
+            music.pause();
+            btn.textContent = '🔇';
+        } else {
+            music.play().catch(() => {});
+            btn.textContent = '🔊';
+        }
+        playing = !playing;
+    });
+})();
+
+
+/* ---------- CONTAGEM REGRESSIVA ---------- */
+(function () {
+    const target = new Date('2027-04-03T17:00:00');
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function update() {
+        const diff = target - Date.now();
+        if (diff <= 0) {
+            ['days','hours','minutes','seconds'].forEach(id => {
+                document.getElementById(id).textContent = '00';
+            });
+            return;
+        }
+        document.getElementById('days').textContent    = pad(Math.floor(diff / 86400000));
+        document.getElementById('hours').textContent   = pad(Math.floor((diff % 86400000) / 3600000));
+        document.getElementById('minutes').textContent = pad(Math.floor((diff % 3600000) / 60000));
+        document.getElementById('seconds').textContent = pad(Math.floor((diff % 60000) / 1000));
+    }
+
+    update();
+    setInterval(update, 1000);
+})();
+
+
+/* ---------- RSVP ---------- */
+(function () {
+    const form     = document.getElementById('rsvpForm');
+    const feedback = document.getElementById('rsvpFeedback');
+
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name   = document.getElementById('rsvpName').value.trim();
+        const guests = document.getElementById('rsvpGuests').value.trim();
+
+        feedback.classList.remove('error');
+
+        if (!name || !guests) {
+            feedback.textContent = 'Por favor, preencha todos os campos.';
+            feedback.classList.add('error');
+            return;
+        }
+
+        feedback.textContent = `Obrigado, ${name}! Presença confirmada para ${guests} pessoa(s). 💛`;
+        form.reset();
+    });
+})();
